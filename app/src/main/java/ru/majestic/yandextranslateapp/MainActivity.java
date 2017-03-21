@@ -1,45 +1,52 @@
 package ru.majestic.yandextranslateapp;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ru.majestic.yandextranslateapp.ui.adapters.MainNavigationViewPagerAdapter;
+import ru.majestic.yandextranslateapp.ui.fragments.TranslateFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-
+    private static final int[] NAVIGATION_ICONS = {
+            R.drawable.ic_translate,
+            R.drawable.ic_bookmark,
+            R.drawable.ic_settings,
     };
+
+    @BindView(R.id.view_pager)
+    ViewPager navigationViewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout navigationTabs;
+
+    private MainNavigationViewPagerAdapter mainNavigationViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        ButterKnife.bind(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mainNavigationViewPagerAdapter = new MainNavigationViewPagerAdapter(getSupportFragmentManager());
+        mainNavigationViewPagerAdapter.addFragment(TranslateFragment.newInstance());
+
+        navigationViewPager.setAdapter(mainNavigationViewPagerAdapter);
+        navigationTabs.setupWithViewPager(navigationViewPager);
+
+        //Настраиваем иконки на табах
+        navigationTabs.getTabAt(0).setIcon(NAVIGATION_ICONS[0]);
+//        navigationTabs.getTabAt(1).setIcon(NAVIGATION_ICONS[1]);
+//        navigationTabs.getTabAt(2).setIcon(NAVIGATION_ICONS[2]);
     }
 
 }
