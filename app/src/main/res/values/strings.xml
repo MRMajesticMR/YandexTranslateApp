@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">Яндекс.Переводчик (Тест)</string>
 
-    <!-- Ключик для доступа к Яндекс-переводчику -->
-    <string name="yandex_translate_api_key" translatable="false">trnsl.1.1.20170321T133200Z.b9e9b8e49fda5adc.effc390f5d260d861086b8ab57acddee00a94910</string>
-
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
