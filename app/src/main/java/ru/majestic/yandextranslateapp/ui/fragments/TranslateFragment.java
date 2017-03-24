@@ -1,22 +1,20 @@
 package ru.majestic.yandextranslateapp.ui.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,9 +26,22 @@ import ru.majestic.yandextranslateapp.R;
 import ru.majestic.yandextranslateapp.api.APIsHandler;
 import ru.majestic.yandextranslateapp.api.YandexTranslateAPI;
 import ru.majestic.yandextranslateapp.api.responses.translate.TranslateResponse;
+import ru.majestic.yandextranslateapp.ui.activities.SelectLanguageActivity;
+import ru.majestic.yandextranslateapp.ui.utils.DimensionsConverter;
 import ru.majestic.yandextranslateapp.ui.utils.StringUtils;
 
 public class TranslateFragment extends Fragment {
+
+    private static final int REQUEST_CODE_SELECT_LANGUAGE_FROM = 101;
+    private static final int REQUEST_CODE_SELECT_LANGUAGE_TO = 102;
+
+    private static final int TOOLBAR_MAX_ELEVATION = 4;
+
+    @BindView(R.id.nested_scroll_view_result)
+    NestedScrollView resultNestedScrollView;
+
+    @BindView(R.id.txt_translate_result)
+    TextView translateResultTxt;
 
     @BindView(R.id.edt_text_input)
     EditText inputEdt;
@@ -38,8 +49,14 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.clear_input)
     View clearInput;
 
-    @BindView(R.id.txt_translate_result)
-    TextView translateResultTxt;
+    @BindView(R.id.txt_language_from)
+    TextView languageFromTxt;
+
+    @BindView(R.id.txt_language_to)
+    TextView languageToTxt;
+
+    @BindView(R.id.swap_language)
+    View swapLanguageView;
 
     private Call<TranslateResponse> callTranslate;
 
@@ -129,13 +146,21 @@ public class TranslateFragment extends Fragment {
 
         //Отслеживаем изменения в поле ввода
         inputEdt.addTextChangedListener(inputTextWatcher);
+
+        resultNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                //Изменение тени в зависимости от скролла результата перевода
+                changeToolbarElevation((scrollY <= TOOLBAR_MAX_ELEVATION) ? scrollY : TOOLBAR_MAX_ELEVATION);
+            }
+        });
     }
 
     /**
      * Очистка поля ввода
      */
     @OnClick(R.id.clear_input)
-    public void clearInput() {
+    protected void clearInput() {
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -146,6 +171,36 @@ public class TranslateFragment extends Fragment {
             }
         }, 150);
 
+    }
+
+    /**
+     * Нажата кнопка выбора, с какого языка переводить
+     */
+    @OnClick(R.id.txt_language_from)
+    protected void selectLanguageFrom() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity().isFinishing()) return;
+
+                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_FROM, "");
+            }
+        }, 150);
+    }
+
+    /**
+     * Нажата кнопка выбора, на какой язык переводить
+     */
+    @OnClick(R.id.txt_language_to)
+    protected void selectLanguageTo() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity().isFinishing()) return;
+
+                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_TO, "");
+            }
+        }, 150);
     }
 
     //===== <PRIVATE_METHODS> =====
@@ -167,6 +222,17 @@ public class TranslateFragment extends Fragment {
      */
     private void clearTranslate() {
         translateResultTxt.setText("");
+    }
+
+    /**
+     * Изменение подъема (тени) toolbar
+     *
+     * @param elevationInDp elevation в dp
+     */
+    private void changeToolbarElevation(float elevationInDp) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().findViewById(R.id.appbar).setElevation(DimensionsConverter.convertDpToPixel(elevationInDp, getContext()));
+        }
     }
     //===== </PRIVATE_METHODS> =====
 }

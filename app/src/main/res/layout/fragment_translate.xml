@@ -5,7 +5,40 @@
     android:layout_height="match_parent"
     tools:context="ru.majestic.yandextranslateapp.ui.fragments.TranslateFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/input_container"
+        android:background="@color/light_light_gray">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+                android:id="@+id/txt_translate_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:font="Roboto-Medium.ttf" />
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/upper_shadow" />
+
+    </RelativeLayout>
+
     <LinearLayout
+        android:id="@+id/input_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -13,9 +46,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp">
 
             <TextView
+                android:id="@+id/txt_language_from"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
@@ -32,6 +67,7 @@
                 android:textSize="18sp" />
 
             <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/swap_language"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/gray_opacity_48_btn_background"
@@ -41,6 +77,7 @@
                 app:srcCompat="@drawable/ic_arrow_right" />
 
             <TextView
+                android:id="@+id/txt_language_to"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
@@ -72,7 +109,7 @@
             <android.support.v4.widget.NestedScrollView
                 android:id="@+id/input_text_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="48dp"
@@ -109,16 +146,5 @@
         </RelativeLayout>
 
     </LinearLayout>
-
-    <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
-        android:id="@+id/txt_translate_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:font="Roboto-Medium.ttf" />
 
 </RelativeLayout>
