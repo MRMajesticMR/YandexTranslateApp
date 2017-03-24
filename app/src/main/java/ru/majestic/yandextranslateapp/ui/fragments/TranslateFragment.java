@@ -38,9 +38,6 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.clear_input)
     View clearInput;
 
-    @BindView(R.id.txt_source_text)
-    TextView sourceTextTxt;
-
     @BindView(R.id.txt_translate_result)
     TextView translateResultTxt;
 
@@ -58,7 +55,6 @@ public class TranslateFragment extends Fragment {
                 TranslateResponse translateResponse = response.body();
 
                 if (translateResponse.getCode() == TranslateResponse.CODE_SUCCESS) {
-                    sourceTextTxt.setText(inputEdt.getText().toString());
                     translateResultTxt.setText(StringUtils.strArrayToStr(translateResponse.getText()));
 
                 } else {
@@ -170,7 +166,6 @@ public class TranslateFragment extends Fragment {
      * Очищает все результаты перевода
      */
     private void clearTranslate() {
-        sourceTextTxt.setText("");
         translateResultTxt.setText("");
     }
     //===== </PRIVATE_METHODS> =====
