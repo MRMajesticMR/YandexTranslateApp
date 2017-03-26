@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ public class TranslateFragment extends Fragment {
     private static final int REQUEST_CODE_SELECT_LANGUAGE_TO = 102;
 
     private static final int TOOLBAR_MAX_ELEVATION = 4;
+
+    private static final String FRAGMENT_TITLE = "Я.Переводчик";
 
     @BindView(R.id.nested_scroll_view_result)
     NestedScrollView resultNestedScrollView;
@@ -119,7 +123,10 @@ public class TranslateFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         ButterKnife.bind(this, view);
+
+        ((TextView) getActivity().findViewById(R.id.txt_toolbar_title)).setText(FRAGMENT_TITLE);
 
         //Отслеживаем изменения в поле ввода
         inputEdt.addTextChangedListener(inputTextWatcher);
@@ -203,8 +210,10 @@ public class TranslateFragment extends Fragment {
 
                 translator.setLanguageFrom(languageInfo);
 
-                if (!inputEdt.getText().toString().isEmpty())
+                if (!inputEdt.getText().toString().isEmpty()) {
+                    clearTranslateResult();
                     translator.translateAsync(inputEdt.getText().toString());
+                }
 
                 updateLanguagesView();
             }
@@ -213,8 +222,10 @@ public class TranslateFragment extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
                 LanguageInfo languageInfo = data.getParcelableExtra(SelectLanguageActivity.EXTRA_RESULT_LANGUAGE_INFO);
 
-                if (!inputEdt.getText().toString().isEmpty())
+                if (!inputEdt.getText().toString().isEmpty()) {
+                    clearTranslateResult();
                     translator.translateAsync(inputEdt.getText().toString());
+                }
 
                 translator.setLanguageTo(languageInfo);
 
@@ -227,6 +238,10 @@ public class TranslateFragment extends Fragment {
     }
 
     //===== <PRIVATE_METHODS> =====
+
+    private void clearTranslateResult() {
+        translateResultTxt.setText("");
+    }
 
     /**
      * Обновляет отображение языков перевода

@@ -1,6 +1,7 @@
 package ru.majestic.yandextranslateapp.ui.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -26,6 +27,7 @@ import ru.majestic.yandextranslateapp.api.responses.translate.GetLangsResponse;
 import ru.majestic.yandextranslateapp.data.LanguageInfo;
 import ru.majestic.yandextranslateapp.ui.adapters.SelectLanguageRecyclerViewAdapter;
 import ru.majestic.yandextranslateapp.ui.adapters.comparators.LanguagesComparator;
+import ru.majestic.yandextranslateapp.ui.utils.DimensionsConverter;
 
 public class SelectLanguageActivity extends AppCompatActivity {
 
@@ -33,7 +35,11 @@ public class SelectLanguageActivity extends AppCompatActivity {
 
     public static final String EXTRA_RESULT_LANGUAGE_INFO = "EXTRA_RESULT_LANGUAGE_INFO";
 
+    private static final int TOOLBAR_MAX_ELEVATION = 8;
+
     private static final String DEFAULT_UI = "ru";
+
+    private int recyclerViewScrolledY = 0;
 
     private SelectLanguageRecyclerViewAdapter selectLanguageRecyclerViewAdapter = new SelectLanguageRecyclerViewAdapter();
 
@@ -82,6 +88,18 @@ public class SelectLanguageActivity extends AppCompatActivity {
 
         languagesRecyclerView.setAdapter(selectLanguageRecyclerViewAdapter);
         languagesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        languagesRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                recyclerViewScrolledY += dy;
+
+                //Изменение тени в зависимости от скролла экрана
+                changeToolbarElevation((recyclerViewScrolledY <= TOOLBAR_MAX_ELEVATION) ? recyclerViewScrolledY : TOOLBAR_MAX_ELEVATION);
+            }
+        });
 
         startRequestLanguagesList();
     }
@@ -133,5 +151,15 @@ public class SelectLanguageActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Изменение подъема (тени) toolbar
+     *
+     * @param elevationInDp elevation в dp
+     */
+    private void changeToolbarElevation(float elevationInDp) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.appbar).setElevation(DimensionsConverter.convertDpToPixel(elevationInDp, this));
+        }
+    }
     //===== </PRIVATE_METHODS> =====
 }
