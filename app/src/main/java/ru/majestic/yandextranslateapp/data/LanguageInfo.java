@@ -24,6 +24,15 @@ public class LanguageInfo implements Parcelable {
     private String lang;
     private String title;
 
+    public LanguageInfo() {
+
+    }
+
+    public LanguageInfo(String lang, String title) {
+        setLang(lang);
+        setTitle(title);
+    }
+
     protected LanguageInfo(Parcel in) {
         lang = in.readString();
         title = in.readString();

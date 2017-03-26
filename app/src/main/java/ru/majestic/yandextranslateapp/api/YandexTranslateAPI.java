@@ -5,6 +5,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import ru.majestic.yandextranslateapp.api.responses.translate.GetLangsResponse;
 import ru.majestic.yandextranslateapp.api.responses.translate.TranslateResponse;
 
 /**
@@ -38,6 +39,19 @@ public interface YandexTranslateAPI {
     Call<TranslateResponse> translate(
             @Query("lang") String lang,
             @Field("text") String text
+    );
+
+
+    /**
+     * Получение списка направлений перевода, поддерживаемых сервисом.
+     *
+     * @param ui - Обязательный параметр.
+     * В ответе список поддерживаемых языков будет перечислен в поле langs вместе с расшифровкой кодов языков. Названия языков будут выведены на языке, код которого соответствует этому параметру.
+     * @return
+     */
+    @POST("getLangs")
+    Call<GetLangsResponse> getLangs(
+            @Query("ui") String ui
     );
 
 }

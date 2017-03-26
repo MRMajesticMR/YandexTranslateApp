@@ -1,9 +1,10 @@
 package ru.majestic.yandextranslateapp.ui.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
@@ -19,16 +20,13 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import ru.majestic.yandextranslateapp.R;
-import ru.majestic.yandextranslateapp.api.APIsHandler;
 import ru.majestic.yandextranslateapp.api.YandexTranslateAPI;
-import ru.majestic.yandextranslateapp.api.responses.translate.TranslateResponse;
+import ru.majestic.yandextranslateapp.data.LanguageInfo;
+import ru.majestic.yandextranslateapp.translator.ITranslator;
+import ru.majestic.yandextranslateapp.translator.impl.YandexTranslator;
 import ru.majestic.yandextranslateapp.ui.activities.SelectLanguageActivity;
 import ru.majestic.yandextranslateapp.ui.utils.DimensionsConverter;
-import ru.majestic.yandextranslateapp.ui.utils.StringUtils;
 
 public class TranslateFragment extends Fragment {
 
@@ -58,40 +56,19 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.swap_language)
     View swapLanguageView;
 
-    private Call<TranslateResponse> callTranslate;
-
-    /**
-     * Обрабатывает ответ сервера от translate
-     */
-    private Callback<TranslateResponse> callbackTranslate = new Callback<TranslateResponse>() {
+    private ITranslator translator = new YandexTranslator();
+    private ITranslator.TranslationListener translationListener = new ITranslator.TranslationListener() {
         @Override
-        public void onResponse(Call<TranslateResponse> call, Response<TranslateResponse> response) {
-            if (getActivity().isFinishing()) return;
-
-            if (response.isSuccessful()) {
-                TranslateResponse translateResponse = response.body();
-
-                if (translateResponse.getCode() == TranslateResponse.CODE_SUCCESS) {
-                    translateResultTxt.setText(StringUtils.strArrayToStr(translateResponse.getText()));
-
-                } else {
-                    Toast.makeText(getContext(), translateResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            } else {
-                Toast.makeText(getContext(), "Не удалось перевести текст", Toast.LENGTH_SHORT).show();
-            }
+        public void onTranslateSuccess(String result) {
+            translateResultTxt.setText(result);
         }
 
         @Override
-        public void onFailure(Call<TranslateResponse> call, Throwable t) {
-            if (getActivity().isFinishing()) return;
-
-            if (!call.isCanceled()) {
-                Toast.makeText(getContext(), "Не удалось перевести текст", Toast.LENGTH_SHORT).show();
-            }
+        public void onTranslateFailed(String reason) {
+            Toast.makeText(getContext(), reason, Toast.LENGTH_SHORT).show();
         }
     };
+
 
     private TextWatcher inputTextWatcher = new TextWatcher() {
         @Override
@@ -117,7 +94,7 @@ public class TranslateFragment extends Fragment {
                 String text = inputEdt.getText().toString();
 
                 if (text.length() <= YandexTranslateAPI.MAX_TEXT_LENGTH) {
-                    startRequestTranslate(text, "ru-en");
+                    translator.translateAsync(text);
 
                 } else {
                     Toast.makeText(getContext(), "Текст не должен превышать 10.000 символов", Toast.LENGTH_SHORT).show();
@@ -156,6 +133,21 @@ public class TranslateFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        translator.setTranslationListener(translationListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        translator.setTranslationListener(null);
+        translator.cancelTranslate();
+    }
+
     /**
      * Очистка поля ввода
      */
@@ -183,7 +175,7 @@ public class TranslateFragment extends Fragment {
             public void run() {
                 if (getActivity().isFinishing()) return;
 
-                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_FROM, "");
+                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_FROM);
             }
         }, 150);
     }
@@ -198,23 +190,50 @@ public class TranslateFragment extends Fragment {
             public void run() {
                 if (getActivity().isFinishing()) return;
 
-                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_TO, "");
+                SelectLanguageActivity.launchForResult(TranslateFragment.this, REQUEST_CODE_SELECT_LANGUAGE_TO);
             }
         }, 150);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_FROM) {
+            if (resultCode == Activity.RESULT_OK) {
+                LanguageInfo languageInfo = data.getParcelableExtra(SelectLanguageActivity.EXTRA_RESULT_LANGUAGE_INFO);
+
+                translator.setLanguageFrom(languageInfo);
+
+                if (!inputEdt.getText().toString().isEmpty())
+                    translator.translateAsync(inputEdt.getText().toString());
+
+                updateLanguagesView();
+            }
+
+        } else if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_TO) {
+            if (resultCode == Activity.RESULT_OK) {
+                LanguageInfo languageInfo = data.getParcelableExtra(SelectLanguageActivity.EXTRA_RESULT_LANGUAGE_INFO);
+
+                if (!inputEdt.getText().toString().isEmpty())
+                    translator.translateAsync(inputEdt.getText().toString());
+
+                translator.setLanguageTo(languageInfo);
+
+                updateLanguagesView();
+            }
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     //===== <PRIVATE_METHODS> =====
 
     /**
-     * Начинает процесс запроса перевода текста
+     * Обновляет отображение языков перевода
      */
-    private void startRequestTranslate(@NonNull String text, @NonNull String lang) {
-        if (callTranslate != null && callTranslate.isExecuted()) {
-            callTranslate.cancel();
-        }
-
-        callTranslate = APIsHandler.getInstance().getYandexTranslateAPI().translate(lang, text);
-        callTranslate.enqueue(callbackTranslate);
+    private void updateLanguagesView() {
+        languageFromTxt.setText(translator.getLanguageFrom().getTitle());
+        languageToTxt.setText(translator.getLanguageTo().getTitle());
     }
 
     /**
