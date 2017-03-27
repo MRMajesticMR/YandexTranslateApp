@@ -1,6 +1,7 @@
 package ru.majestic.yandextranslateapp.ui.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,20 +93,9 @@ public class TranslateFragment extends Fragment {
             if (inputEdt.getText().toString().isEmpty()) {
                 clearInput.setVisibility(View.INVISIBLE);
 
-                clearTranslate();
             } else {
                 //Показываем кнопку очистки поля ввода, только если там что-то есть
                 clearInput.setVisibility(View.VISIBLE);
-
-                String text = inputEdt.getText().toString();
-
-                if (text.length() <= YandexTranslateAPI.MAX_TEXT_LENGTH) {
-                    translator.translateAsync(text);
-
-                } else {
-                    Toast.makeText(getContext(), "Текст не должен превышать 10.000 символов", Toast.LENGTH_SHORT).show();
-                }
-
             }
         }
     };
@@ -130,6 +122,25 @@ public class TranslateFragment extends Fragment {
 
         //Отслеживаем изменения в поле ввода
         inputEdt.addTextChangedListener(inputTextWatcher);
+        inputEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                if (inputEdt.getText().toString().isEmpty()) {
+                    clearTranslate();
+
+                } else if (inputEdt.getText().toString().length() > YandexTranslateAPI.MAX_TEXT_LENGTH) {
+                    Toast.makeText(getContext(), "Текст не должен превышать 10.000 символов", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    hideKeyboard();
+                    clearTranslate();
+                    translator.translateAsync(inputEdt.getText().toString());
+                }
+
+                return true;
+            }
+        });
 
         resultNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -266,6 +277,17 @@ public class TranslateFragment extends Fragment {
     private void changeToolbarElevation(float elevationInDp) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().findViewById(R.id.appbar).setElevation(DimensionsConverter.convertDpToPixel(elevationInDp, getContext()));
+        }
+    }
+
+    /**
+     * Скрывает клавиатуру
+     */
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        View currentFocusView = getActivity().getCurrentFocus();
+        if (currentFocusView != null) {
+            inputManager.hideSoftInputFromWindow(currentFocusView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
     //===== </PRIVATE_METHODS> =====
