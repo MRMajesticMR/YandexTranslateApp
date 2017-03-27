@@ -40,8 +40,6 @@ public class TranslateFragment extends Fragment {
 
     private static final int TOOLBAR_MAX_ELEVATION = 4;
 
-    private static final String FRAGMENT_TITLE = "Я.Переводчик";
-
     @BindView(R.id.nested_scroll_view_result)
     NestedScrollView resultNestedScrollView;
 
@@ -117,8 +115,6 @@ public class TranslateFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         ButterKnife.bind(this, view);
-
-        ((TextView) getActivity().findViewById(R.id.txt_toolbar_title)).setText(FRAGMENT_TITLE);
 
         //Отслеживаем изменения в поле ввода
         inputEdt.addTextChangedListener(inputTextWatcher);

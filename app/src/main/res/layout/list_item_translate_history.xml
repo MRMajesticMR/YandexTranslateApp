@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gray_opacity_btn_background"
+    android:clickable="true"
+    android:minHeight="72dp">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_favorite"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/gray_opacity_48_btn_background"
+        android:clickable="true"
+        android:scaleType="center"
+        android:tint="@color/gray"
+        app:srcCompat="@drawable/ic_bookmark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="72dp"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/txt_lang_code"
+        android:orientation="vertical">
+
+        <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+            android:id="@+id/txt_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Русский"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:font="Roboto-Medium.ttf" />
+
+        <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+            android:id="@+id/txt_translate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.3"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Русский"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:font="Roboto-Medium.ttf" />
+
+    </LinearLayout>
+
+    <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+        android:id="@+id/txt_lang_code"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+        android:alpha="0.3"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:text="RU-RU"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:font="Roboto-Regular.ttf" />
+
+    <View
+        android:id="@+id/delimiter"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.1"
+        android:background="@color/black" />
+
+</RelativeLayout>
