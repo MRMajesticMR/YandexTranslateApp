@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,8 +40,6 @@ public class SelectLanguageActivity extends AppCompatActivity {
     public static final String EXTRA_RESULT_LANGUAGE_INFO = "EXTRA_RESULT_LANGUAGE_INFO";
 
     private static final int TOOLBAR_MAX_ELEVATION = 8;
-
-    private static final String DEFAULT_UI = "ru";
 
     private int recyclerViewScrolledY = 0;
 
@@ -126,7 +125,7 @@ public class SelectLanguageActivity extends AppCompatActivity {
      * Запускает процесс получения списка доступных языков
      */
     private void startRequestLanguagesList() {
-        APIsHandler.getInstance().getYandexTranslateAPI().getLangs(DEFAULT_UI).enqueue(new Callback<GetLangsResponse>() {
+        APIsHandler.getInstance().getYandexTranslateAPI().getLangs(Locale.getDefault().getLanguage()).enqueue(new Callback<GetLangsResponse>() {
 
             @Override
             public void onResponse(Call<GetLangsResponse> call, Response<GetLangsResponse> response) {

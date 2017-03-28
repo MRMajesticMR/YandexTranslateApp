@@ -16,17 +16,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
-                android:id="@+id/txt_translate_result"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:font="Roboto-Medium.ttf" />
+                android:orientation="vertical">
+
+                <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+                    android:id="@+id/txt_translate_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Suck"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:font="Roboto-Medium.ttf" />
+
+                <LinearLayout
+                    android:id="@+id/dictionary_result_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+
+                    <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+                        android:id="@+id/txt_dictionary_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:text="Suck"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:font="Roboto-Medium.ttf" />
+
+                    <ru.majestic.yandextranslateapp.ui.views.TypefacedTextView
+                        android:id="@+id/txt_dictionary_transcription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:text="[suck]"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp"
+                        app:font="Roboto-Medium.ttf" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 

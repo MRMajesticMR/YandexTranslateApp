@@ -13,11 +13,11 @@ import okhttp3.Response;
  * Интерсептор добавляет ключик от Яндекс.Переводчик API в каждый запрос.
  */
 
-public class YandexTranslateAddKeyInterceptor implements Interceptor {
+public class AddQueryKeyInterceptor implements Interceptor {
 
     private final String key;
 
-    public YandexTranslateAddKeyInterceptor(String key) {
+    public AddQueryKeyInterceptor(String key) {
         this.key = key;
     }
 

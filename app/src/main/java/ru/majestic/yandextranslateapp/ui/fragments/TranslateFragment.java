@@ -22,12 +22,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.majestic.yandextranslateapp.R;
+import ru.majestic.yandextranslateapp.api.APIsHandler;
 import ru.majestic.yandextranslateapp.api.YandexTranslateAPI;
+import ru.majestic.yandextranslateapp.api.responses.dictionary.LookupResponse;
 import ru.majestic.yandextranslateapp.data.LanguageInfo;
+import ru.majestic.yandextranslateapp.data.dictionary.DictionaryEntry;
 import ru.majestic.yandextranslateapp.translator.ITranslator;
 import ru.majestic.yandextranslateapp.translator.impl.YandexTranslator;
 import ru.majestic.yandextranslateapp.ui.activities.SelectLanguageActivity;
@@ -46,6 +54,15 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.txt_translate_result)
     TextView translateResultTxt;
 
+    @BindView(R.id.dictionary_result_container)
+    View dictionaryResultContainer;
+
+    @BindView(R.id.txt_dictionary_text)
+    TextView dictionaryTextTxt;
+
+    @BindView(R.id.txt_dictionary_transcription)
+    TextView dictionaryTranscriptioTxt;
+
     @BindView(R.id.edt_text_input)
     EditText inputEdt;
 
@@ -61,11 +78,42 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.swap_language)
     View swapLanguageView;
 
+    private Call<LookupResponse> lookupCall;
+
+    private Callback<LookupResponse> lookupCallback = new Callback<LookupResponse>() {
+        @Override
+        public void onResponse(Call<LookupResponse> call, Response<LookupResponse> response) {
+            if (response.isSuccessful()) {
+
+                LookupResponse lookupResponse = response.body();
+
+                if (lookupResponse.getCode() == LookupResponse.CODE_OK) {
+                    handleLookupResponse(lookupResponse);
+
+                } else {
+                    //TODO: Do something
+                }
+
+            } else {
+                //TODO: Do something
+            }
+        }
+
+        @Override
+        public void onFailure(Call<LookupResponse> call, Throwable t) {
+            if(!call.isCanceled()) {
+                //TODO: Do something
+            }
+        }
+    };
+
     private ITranslator translator = new YandexTranslator();
     private ITranslator.TranslationListener translationListener = new ITranslator.TranslationListener() {
         @Override
         public void onTranslateSuccess(String result) {
             translateResultTxt.setText(result);
+
+            requestDictionary(inputEdt.getText().toString());
         }
 
         @Override
@@ -263,6 +311,7 @@ public class TranslateFragment extends Fragment {
      */
     private void clearTranslate() {
         translateResultTxt.setText("");
+        dictionaryResultContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -284,6 +333,41 @@ public class TranslateFragment extends Fragment {
         View currentFocusView = getActivity().getCurrentFocus();
         if (currentFocusView != null) {
             inputManager.hideSoftInputFromWindow(currentFocusView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void requestDictionary(String text) {
+        if (lookupCall != null && lookupCall.isExecuted()) {
+            lookupCall.cancel();
+        }
+
+        lookupCall = APIsHandler.getInstance().getYandexDictionaryAPI().lookup(
+                String.format("%s-%s", translator.getLanguageFrom().getLang(), translator.getLanguageTo().getLang()),
+                text,
+                Locale.getDefault().getLanguage()
+        );
+
+        lookupCall.enqueue(lookupCallback);
+
+    }
+
+    /**
+     * Обрабатывает ответ, пришедший от Яндекс.Словаря
+     * @param lookupResponse
+     */
+    private void handleLookupResponse(LookupResponse lookupResponse) {
+        if (!lookupResponse.getDictionaryEntries().isEmpty()) {
+            dictionaryResultContainer.setVisibility(View.VISIBLE);
+
+            DictionaryEntry dictionaryEntry = lookupResponse.getDictionaryEntries().get(0);
+
+            dictionaryTextTxt.setText(dictionaryEntry.getText());
+            if (dictionaryEntry.getTranscription() != null) {
+                dictionaryTranscriptioTxt.setText(String.format("[%s]", dictionaryEntry.getTranscription()));
+                dictionaryTranscriptioTxt.setVisibility(View.VISIBLE);
+            } else {
+                dictionaryTranscriptioTxt.setVisibility(View.GONE);
+            }
         }
     }
     //===== </PRIVATE_METHODS> =====
