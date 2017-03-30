@@ -1,6 +1,7 @@
 package ru.majestic.yandextranslateapp.ui.fragments;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,14 +23,22 @@ import ru.majestic.yandextranslateapp.R;
 import ru.majestic.yandextranslateapp.dao.DAOsHandler;
 import ru.majestic.yandextranslateapp.data.TranslateItem;
 import ru.majestic.yandextranslateapp.ui.adapters.TranslateHistoryRecyclerViewAdapter;
+import ru.majestic.yandextranslateapp.ui.utils.DimensionsConverter;
 import ru.majestic.yandextranslateapp.ui.utils.Updatable;
 
 public class HistoryFragment extends Fragment implements Updatable {
 
     private TranslateHistoryRecyclerViewAdapter translateHistoryRecyclerViewAdapter = new TranslateHistoryRecyclerViewAdapter();
 
+    private static final int TOOLBAR_MAX_ELEVATION = 4;
+
+    private int recyclerViewScrolledY = 0;
+
     @BindView(R.id.history_recycler_view)
     RecyclerView historyRecyclerView;
+
+    @BindView(R.id.search_shadow)
+    View searchShadow;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -57,6 +66,23 @@ public class HistoryFragment extends Fragment implements Updatable {
 
         historyRecyclerView.setAdapter(translateHistoryRecyclerViewAdapter);
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+        historyRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                recyclerViewScrolledY += dy;
+
+                //Изменение тени под поиском
+                int searchElevation = (recyclerViewScrolledY <= TOOLBAR_MAX_ELEVATION) ? recyclerViewScrolledY : TOOLBAR_MAX_ELEVATION;
+                if (searchElevation < 1) searchElevation = 1;
+
+                ViewGroup.LayoutParams layoutParams = searchShadow.getLayoutParams();
+                layoutParams.height = DimensionsConverter.convertDpToPixel(searchElevation, getContext());
+                searchShadow.setLayoutParams(layoutParams);
+            }
+        });
     }
 
     @Override
@@ -83,4 +109,17 @@ public class HistoryFragment extends Fragment implements Updatable {
         }.execute();
 
     }
+
+    //===== <PRIVATE_METHODS> =====
+    /**
+     * Изменение подъема (тени) toolbar
+     *
+     * @param elevationInDp elevation в dp
+     */
+    private void changeToolbarElevation(float elevationInDp) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().findViewById(R.id.appbar).setElevation(DimensionsConverter.convertDpToPixel(elevationInDp, getContext()));
+        }
+    }
+    //===== </PRIVATE_METHODS> =====
 }
