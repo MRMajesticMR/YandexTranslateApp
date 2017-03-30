@@ -36,7 +36,9 @@ import ru.majestic.yandextranslateapp.api.APIsHandler;
 import ru.majestic.yandextranslateapp.api.YandexDictionaryAPI;
 import ru.majestic.yandextranslateapp.api.YandexTranslateAPI;
 import ru.majestic.yandextranslateapp.api.responses.dictionary.LookupResponse;
+import ru.majestic.yandextranslateapp.dao.DAOsHandler;
 import ru.majestic.yandextranslateapp.data.LanguageInfo;
+import ru.majestic.yandextranslateapp.data.TranslateItem;
 import ru.majestic.yandextranslateapp.data.dictionary.DictionaryEntry;
 import ru.majestic.yandextranslateapp.translator.ITranslator;
 import ru.majestic.yandextranslateapp.translator.impl.YandexTranslator;
@@ -105,8 +107,10 @@ public class TranslateFragment extends Fragment {
     private ITranslator translator = new YandexTranslator();
     private ITranslator.TranslationListener translationListener = new ITranslator.TranslationListener() {
         @Override
-        public void onTranslateSuccess(String result) {
-            translateResultTxt.setText(result);
+        public void onTranslateSuccess(TranslateItem result) {
+            DAOsHandler.getInstance().getTranslateItemDAO().save(result);
+
+            translateResultTxt.setText(result.getTranslate());
 
             requestDictionary(inputEdt.getText().toString());
         }

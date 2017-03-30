@@ -1,23 +1,30 @@
 package ru.majestic.yandextranslateapp.ui.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.activeandroid.query.Select;
+
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.majestic.yandextranslateapp.R;
-import ru.majestic.yandextranslateapp.data.TranslateHistoryItem;
+import ru.majestic.yandextranslateapp.dao.DAOsHandler;
+import ru.majestic.yandextranslateapp.data.TranslateItem;
 import ru.majestic.yandextranslateapp.ui.adapters.TranslateHistoryRecyclerViewAdapter;
+import ru.majestic.yandextranslateapp.ui.utils.Updatable;
 
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment implements Updatable {
 
     private TranslateHistoryRecyclerViewAdapter translateHistoryRecyclerViewAdapter = new TranslateHistoryRecyclerViewAdapter();
 
@@ -41,7 +48,7 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         translateHistoryRecyclerViewAdapter.setActionListener(new TranslateHistoryRecyclerViewAdapter.ActionListener() {
             @Override
-            public void onTranslateHistoryItemSelected(TranslateHistoryItem translateHistoryItem) {
+            public void onTranslateHistoryItemSelected(TranslateItem translateItem) {
 
             }
         });
@@ -50,18 +57,30 @@ public class HistoryFragment extends Fragment {
 
         historyRecyclerView.setAdapter(translateHistoryRecyclerViewAdapter);
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    }
 
-        //TODO: For debug only
-        TranslateHistoryItem translateHistoryItem = new TranslateHistoryItem();
-        translateHistoryItem.setSource("Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет Привет ");
-        translateHistoryItem.setTranslate("Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi Hi ");
-        translateHistoryItem.setFavorite(true);
-        translateHistoryItem.setLangDist("en");
-        translateHistoryItem.setLangSource("ru");
-        translateHistoryItem.setTranslateTime(new Date());
+    @Override
+    public void update() {
+        new AsyncTask<Void, Void, List<TranslateItem>>() {
 
-        translateHistoryRecyclerViewAdapter.getTranslateHistoryItems().add(translateHistoryItem);
+            @Override
+            protected List<TranslateItem> doInBackground(Void... params) {
+                return DAOsHandler.getInstance().getTranslateItemDAO().list();
+            }
 
-        translateHistoryRecyclerViewAdapter.notifyDataSetChanged();
+            @Override
+            protected void onPostExecute(List<TranslateItem> translateItems) {
+                if(getActivity().isFinishing()) return;
+
+                translateHistoryRecyclerViewAdapter.getTranslateItems().clear();
+
+                for (TranslateItem translateItem: translateItems) {
+                    translateHistoryRecyclerViewAdapter.getTranslateItems().add(translateItem);
+                }
+
+                translateHistoryRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        }.execute();
+
     }
 }

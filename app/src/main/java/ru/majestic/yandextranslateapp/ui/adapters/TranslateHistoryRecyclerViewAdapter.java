@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.majestic.yandextranslateapp.R;
-import ru.majestic.yandextranslateapp.data.TranslateHistoryItem;
+import ru.majestic.yandextranslateapp.data.TranslateItem;
 
 
 /**
@@ -24,7 +24,7 @@ import ru.majestic.yandextranslateapp.data.TranslateHistoryItem;
 
 public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<TranslateHistoryRecyclerViewAdapter.ViewHolder> {
 
-    private final List<TranslateHistoryItem> translateHistoryItems = new LinkedList<>();
+    private final List<TranslateItem> translateItems = new LinkedList<>();
 
     private ActionListener actionListener;
 
@@ -37,17 +37,17 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
         vh.setActionListener(new ViewHolder.ActionListener() {
             @Override
             public void onFavoriteClicked(int translateHistoryPosition) {
-                TranslateHistoryItem translateHistoryItem = getTranslateHistoryItems().get(translateHistoryPosition);
+                TranslateItem translateItem = getTranslateItems().get(translateHistoryPosition);
 
-                translateHistoryItem.setFavorite(!translateHistoryItem.isFavorite());
+                translateItem.setFavorite(!translateItem.getFavorite());
 
-                vh.favoriteImg.setColorFilter(translateHistoryItem.isFavorite() ? ContextCompat.getColor(vh.itemView.getContext(), R.color.colorPrimary) : ContextCompat.getColor(vh.itemView.getContext(), R.color.gray));
+                vh.favoriteImg.setColorFilter(translateItem.getFavorite()? ContextCompat.getColor(vh.itemView.getContext(), R.color.colorPrimary) : ContextCompat.getColor(vh.itemView.getContext(), R.color.gray));
             }
 
             @Override
             public void onItemClicked(int translateHistoryPosition) {
                 if (actionListener != null) {
-                    actionListener.onTranslateHistoryItemSelected(translateHistoryItems.get(translateHistoryPosition));
+                    actionListener.onTranslateHistoryItemSelected(translateItems.get(translateHistoryPosition));
                 }
             }
         });
@@ -57,25 +57,25 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TranslateHistoryItem translateHistoryItem = translateHistoryItems.get(position);
+        TranslateItem translateItem = translateItems.get(position);
 
         holder.translateHistoryPosition = position;
 
-        holder.favoriteImg.setColorFilter(translateHistoryItem.isFavorite() ? ContextCompat.getColor(holder.itemView.getContext(), R.color.colorPrimary) : ContextCompat.getColor(holder.itemView.getContext(), R.color.gray));
-        holder.sourceTxt.setText(translateHistoryItem.getSource());
-        holder.translateTxt.setText(translateHistoryItem.getTranslate());
-        holder.langCodeTxt.setText(String.format("%s-%s", translateHistoryItem.getLangSource(), translateHistoryItem.getLangSource()).toUpperCase());
+        holder.favoriteImg.setColorFilter(translateItem.getFavorite() ? ContextCompat.getColor(holder.itemView.getContext(), R.color.colorPrimary) : ContextCompat.getColor(holder.itemView.getContext(), R.color.gray));
+        holder.sourceTxt.setText(translateItem.getSource());
+        holder.translateTxt.setText(translateItem.getTranslate());
+        holder.langCodeTxt.setText(String.format("%s-%s", translateItem.getLangSource(), translateItem.getLangDist()).toUpperCase());
 
-        holder.delimiter.setVisibility(position == translateHistoryItems.size() ? View.GONE : View.VISIBLE);
+        holder.delimiter.setVisibility(position == translateItems.size() ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public int getItemCount() {
-        return translateHistoryItems.size();
+        return translateItems.size();
     }
 
-    public List<TranslateHistoryItem> getTranslateHistoryItems() {
-        return translateHistoryItems;
+    public List<TranslateItem> getTranslateItems() {
+        return translateItems;
     }
 
     public void setActionListener(ActionListener actionListener) {
@@ -84,7 +84,7 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
 
     public interface ActionListener {
 
-        void onTranslateHistoryItemSelected(TranslateHistoryItem translateHistoryItem);
+        void onTranslateHistoryItemSelected(TranslateItem translateItem);
 
     }
 

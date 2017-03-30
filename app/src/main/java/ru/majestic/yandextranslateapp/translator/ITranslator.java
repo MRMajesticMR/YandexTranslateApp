@@ -1,6 +1,7 @@
 package ru.majestic.yandextranslateapp.translator;
 
 import ru.majestic.yandextranslateapp.data.LanguageInfo;
+import ru.majestic.yandextranslateapp.data.TranslateItem;
 
 /**
  * Created by Admin on 26.03.2017.
@@ -65,7 +66,7 @@ public interface ITranslator {
          *
          * @param result - результат перевода.
          */
-        void onTranslateSuccess(String result);
+        void onTranslateSuccess(TranslateItem result);
 
         /**
          * Вызывается в случае не успешного перевода.

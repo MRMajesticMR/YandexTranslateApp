@@ -2,6 +2,7 @@ package ru.majestic.yandextranslateapp;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import butterknife.ButterKnife;
 import ru.majestic.yandextranslateapp.ui.adapters.MainNavigationViewPagerAdapter;
 import ru.majestic.yandextranslateapp.ui.fragments.HistoryFragment;
 import ru.majestic.yandextranslateapp.ui.fragments.TranslateFragment;
+import ru.majestic.yandextranslateapp.ui.utils.Updatable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             toolbarTitleTxt.setText(FRAGMENT_TITLES[position]);
+
+            Fragment fragment = mainNavigationViewPagerAdapter.getItem(position);
+            if (fragment instanceof Updatable) {
+                ((Updatable) fragment).update();
+            }
         }
 
         @Override

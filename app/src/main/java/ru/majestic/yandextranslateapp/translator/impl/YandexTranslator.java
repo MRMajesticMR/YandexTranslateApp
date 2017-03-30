@@ -1,11 +1,14 @@
 package ru.majestic.yandextranslateapp.translator.impl;
 
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.majestic.yandextranslateapp.api.APIsHandler;
 import ru.majestic.yandextranslateapp.api.responses.translate.TranslateResponse;
 import ru.majestic.yandextranslateapp.data.LanguageInfo;
+import ru.majestic.yandextranslateapp.data.TranslateItem;
 import ru.majestic.yandextranslateapp.translator.ITranslator;
 import ru.majestic.yandextranslateapp.ui.utils.StringUtils;
 
@@ -16,6 +19,8 @@ import ru.majestic.yandextranslateapp.ui.utils.StringUtils;
 public class YandexTranslator implements ITranslator {
 
     private TranslationListener translationListener;
+
+    private String sourceText;
 
     private LanguageInfo languageFrom;
     private LanguageInfo languageTo;
@@ -33,7 +38,15 @@ public class YandexTranslator implements ITranslator {
 
                 if (translateResponse.getCode() == TranslateResponse.CODE_SUCCESS) {
                     if (translationListener != null) {
-                        translationListener.onTranslateSuccess(StringUtils.strArrayToStr(translateResponse.getText()));
+                        TranslateItem translateItem = new TranslateItem();
+                        translateItem.setFavorite(false);
+                        translateItem.setLangDist(languageTo.getLang());
+                        translateItem.setLangSource(languageFrom.getLang());
+                        translateItem.setSource(sourceText);
+                        translateItem.setTranslateTime(new Date());
+                        translateItem.setTranslate(StringUtils.strArrayToStr(translateResponse.getText()));
+
+                        translationListener.onTranslateSuccess(translateItem);
                     }
 
                 } else {
@@ -67,6 +80,8 @@ public class YandexTranslator implements ITranslator {
     @Override
     public void translateAsync(String text) {
         if (callTranslate != null && callTranslate.isExecuted()) callTranslate.cancel();
+
+        this.sourceText = text;
 
         callTranslate = APIsHandler.getInstance().getYandexTranslateAPI().translate(String.format("%s-%s", languageFrom.getLang(), languageTo.getLang()), text);
         callTranslate.enqueue(callbackTranslate);

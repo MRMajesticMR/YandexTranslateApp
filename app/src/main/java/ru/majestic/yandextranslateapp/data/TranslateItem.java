@@ -1,19 +1,35 @@
 package ru.majestic.yandextranslateapp.data;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.Date;
 
 /**
  * Created by arkadiy.zakharov on 27.03.2017.
  */
 
-public class TranslateHistoryItem {
+@Table(name = "translate_item")
+public class TranslateItem extends Model {
 
+    @Column(name = "source")
     private String source;
+
+    @Column(name = "translate")
     private String translate;
+
+    @Column(name = "translateTime")
     private Date translateTime;
+
+    @Column(name = "langSource")
     private String langSource;
+
+    @Column(name = "langDist")
     private String langDist;
-    private boolean favorite;
+
+    @Column(name = "favorite")
+    private Boolean favorite;
 
     public String getSource() {
         return source;
@@ -55,11 +71,11 @@ public class TranslateHistoryItem {
         this.langDist = langDist;
     }
 
-    public boolean isFavorite() {
+    public Boolean getFavorite() {
         return favorite;
     }
 
-    public void setFavorite(boolean favorite) {
+    public void setFavorite(Boolean favorite) {
         this.favorite = favorite;
     }
 }
