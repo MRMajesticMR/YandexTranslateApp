@@ -1,5 +1,6 @@
 package ru.majestic.yandextranslateapp.ui.adapters;
 
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.majestic.yandextranslateapp.R;
+import ru.majestic.yandextranslateapp.dao.DAOsHandler;
 import ru.majestic.yandextranslateapp.data.TranslateItem;
 
 
@@ -41,6 +43,8 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
 
                 translateItem.setFavorite(!translateItem.getFavorite());
 
+                saveTranslateHistoryAsync(translateItem);
+
                 vh.favoriteImg.setColorFilter(translateItem.getFavorite()? ContextCompat.getColor(vh.itemView.getContext(), R.color.colorPrimary) : ContextCompat.getColor(vh.itemView.getContext(), R.color.gray));
             }
 
@@ -49,6 +53,16 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
                 if (actionListener != null) {
                     actionListener.onTranslateHistoryItemSelected(translateItems.get(translateHistoryPosition));
                 }
+            }
+
+            private void saveTranslateHistoryAsync(TranslateItem translateItem) {
+                new AsyncTask<TranslateItem, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(TranslateItem... params) {
+                        DAOsHandler.getInstance().getTranslateItemDAO().save(params[0]);
+                        return null;
+                    }
+                }.execute(translateItem);
             }
         });
 
