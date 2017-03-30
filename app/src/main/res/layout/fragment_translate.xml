@@ -29,7 +29,6 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Suck"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:font="Roboto-Medium.ttf" />
@@ -45,7 +44,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="Suck"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         app:font="Roboto-Medium.ttf" />
@@ -55,12 +53,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        android:text="[suck]"
                         android:textColor="@color/gray"
                         android:textSize="16sp"
                         app:font="Roboto-Medium.ttf" />
 
                 </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/dictionary_entry_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp" />
 
             </LinearLayout>
 

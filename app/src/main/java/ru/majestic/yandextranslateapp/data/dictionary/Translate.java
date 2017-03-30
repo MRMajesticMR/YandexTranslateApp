@@ -15,7 +15,7 @@ public class Translate {
     @SerializedName("pos")
     private String partOfSpeech;
 
-    @SerializedName("tr")
+    @SerializedName("syn")
     private List<Synonym> synonyms;
 
     @SerializedName("mean")
@@ -23,6 +23,42 @@ public class Translate {
 
     @SerializedName("ex")
     private List<Example> examples;
+
+    /**
+     * Возвращает строку из всех синонимов
+     *
+     * @return
+     */
+    public String getAllSynonymsString() {
+        StringBuilder stringBuilder = new StringBuilder(text);
+
+
+        if (synonyms != null && !synonyms.isEmpty()) {
+            for (Synonym synonym : synonyms) {
+                stringBuilder.append(", ");
+                stringBuilder.append(synonym.getText());
+            }
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public String getAllMeaningsString() {
+        if (meanings != null && !meanings.isEmpty()) {
+            StringBuilder stringBuilder = new StringBuilder(meanings.get(0).getText());
+
+            if (meanings.size() > 1) {
+                for (int i = 1; i < meanings.size(); i++) {
+                    stringBuilder.append(", ");
+                    stringBuilder.append(meanings.get(i).getText());
+                }
+            }
+
+            return stringBuilder.toString();
+        } else {
+            return null;
+        }
+    }
 
     public String getText() {
         return text;

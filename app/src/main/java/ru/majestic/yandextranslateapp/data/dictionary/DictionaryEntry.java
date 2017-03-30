@@ -13,7 +13,7 @@ public class DictionaryEntry {
     private String text;
 
     @SerializedName("pos")
-    private String partOfSpeed;
+    private String partOfSpeech;
 
     @SerializedName("ts")
     private String transcription;
@@ -23,7 +23,7 @@ public class DictionaryEntry {
 
     private String anm; //Одушевленное/неодушевленное
 
-    @SerializedName("def")
+    @SerializedName("tr")
     private List<Translate> translates;
 
     public String getText() {
@@ -34,12 +34,12 @@ public class DictionaryEntry {
         this.text = text;
     }
 
-    public String getPartOfSpeed() {
-        return partOfSpeed;
+    public String getPartOfSpeech() {
+        return partOfSpeech;
     }
 
-    public void setPartOfSpeed(String partOfSpeed) {
-        this.partOfSpeed = partOfSpeed;
+    public void setPartOfSpeech(String partOfSpeech) {
+        this.partOfSpeech = partOfSpeech;
     }
 
     public String getTranscription() {
@@ -78,7 +78,7 @@ public class DictionaryEntry {
     public String toString() {
         final StringBuffer sb = new StringBuffer("DictionaryEntry{");
         sb.append("text='").append(text).append('\'');
-        sb.append(", partOfSpeed='").append(partOfSpeed).append('\'');
+        sb.append(", partOfSpeech='").append(partOfSpeech).append('\'');
         sb.append(", transcription='").append(transcription).append('\'');
         sb.append(", gender='").append(gender).append('\'');
         sb.append(", anm='").append(anm).append('\'');
