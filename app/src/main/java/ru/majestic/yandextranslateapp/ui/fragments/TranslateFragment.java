@@ -228,6 +228,18 @@ public class TranslateFragment extends Fragment {
     }
 
     /**
+     * Перемена местами языка с которого переводят и на который переводят
+     */
+    @OnClick(R.id.swap_language)
+    protected void swapLanguage() {
+        LanguageInfo fromLanguageInfo = translator.getLanguageFrom();
+        translator.setLanguageFrom(translator.getLanguageTo());
+        translator.setLanguageTo(fromLanguageInfo);
+
+        updateLanguagesView();
+    }
+
+    /**
      * Нажата кнопка выбора, с какого языка переводить
      */
     @OnClick(R.id.txt_language_from)
