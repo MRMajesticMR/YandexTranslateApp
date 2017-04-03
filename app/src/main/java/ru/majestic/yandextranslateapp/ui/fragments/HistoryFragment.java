@@ -109,17 +109,4 @@ public class HistoryFragment extends Fragment implements Updatable {
         }.execute();
 
     }
-
-    //===== <PRIVATE_METHODS> =====
-    /**
-     * Изменение подъема (тени) toolbar
-     *
-     * @param elevationInDp elevation в dp
-     */
-    private void changeToolbarElevation(float elevationInDp) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().findViewById(R.id.appbar).setElevation(DimensionsConverter.convertDpToPixel(elevationInDp, getContext()));
-        }
-    }
-    //===== </PRIVATE_METHODS> =====
 }

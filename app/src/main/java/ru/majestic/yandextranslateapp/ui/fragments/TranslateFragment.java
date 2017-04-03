@@ -278,7 +278,7 @@ public class TranslateFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_FROM) {
+        if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_FROM) { //Выбор языка, с которого производится перевод
             if (resultCode == Activity.RESULT_OK) {
                 LanguageInfo languageInfo = data.getParcelableExtra(SelectLanguageActivity.EXTRA_RESULT_LANGUAGE_INFO);
 
@@ -292,7 +292,7 @@ public class TranslateFragment extends Fragment {
                 updateLanguagesView();
             }
 
-        } else if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_TO) {
+        } else if (requestCode == REQUEST_CODE_SELECT_LANGUAGE_TO) { //Выбор языка, на который производится перевод
             if (resultCode == Activity.RESULT_OK) {
                 LanguageInfo languageInfo = data.getParcelableExtra(SelectLanguageActivity.EXTRA_RESULT_LANGUAGE_INFO);
 
