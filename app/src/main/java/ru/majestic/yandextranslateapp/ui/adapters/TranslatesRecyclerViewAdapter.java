@@ -24,17 +24,17 @@ import ru.majestic.yandextranslateapp.data.TranslateItem;
  * Created by arkadiy.zakharov on 17.10.2016.
  */
 
-public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<TranslateHistoryRecyclerViewAdapter.ViewHolder> {
+public class TranslatesRecyclerViewAdapter extends RecyclerView.Adapter<TranslatesRecyclerViewAdapter.ViewHolder> {
 
     private final List<TranslateItem> translateItems = new LinkedList<>();
 
     private ActionListener actionListener;
 
     @Override
-    public TranslateHistoryRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_translate_history, parent, false);
+    public TranslatesRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_translate, parent, false);
 
-        final TranslateHistoryRecyclerViewAdapter.ViewHolder vh = new TranslateHistoryRecyclerViewAdapter.ViewHolder(v);
+        final TranslatesRecyclerViewAdapter.ViewHolder vh = new TranslatesRecyclerViewAdapter.ViewHolder(v);
 
         vh.setActionListener(new ViewHolder.ActionListener() {
             @Override
@@ -51,7 +51,7 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
             @Override
             public void onItemClicked(int translateHistoryPosition) {
                 if (actionListener != null) {
-                    actionListener.onTranslateHistoryItemSelected(translateItems.get(translateHistoryPosition));
+                    actionListener.onTranslateItemSelected(translateItems.get(translateHistoryPosition));
                 }
             }
 
@@ -98,7 +98,7 @@ public class TranslateHistoryRecyclerViewAdapter extends RecyclerView.Adapter<Tr
 
     public interface ActionListener {
 
-        void onTranslateHistoryItemSelected(TranslateItem translateItem);
+        void onTranslateItemSelected(TranslateItem translateItem);
 
     }
 

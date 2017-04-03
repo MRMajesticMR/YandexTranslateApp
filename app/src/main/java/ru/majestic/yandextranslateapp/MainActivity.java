@@ -11,6 +11,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.majestic.yandextranslateapp.ui.adapters.MainNavigationViewPagerAdapter;
+import ru.majestic.yandextranslateapp.ui.fragments.FavoriteFragment;
 import ru.majestic.yandextranslateapp.ui.fragments.HistoryFragment;
 import ru.majestic.yandextranslateapp.ui.fragments.TranslateFragment;
 import ru.majestic.yandextranslateapp.ui.utils.Updatable;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String[] FRAGMENT_TITLES = {
             "Я.Переводчик",
-            "История"
+            "История",
+            "Избранное"
     };
 
     @BindView(R.id.txt_toolbar_title)
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         mainNavigationViewPagerAdapter = new MainNavigationViewPagerAdapter(getSupportFragmentManager());
         mainNavigationViewPagerAdapter.addFragment(TranslateFragment.newInstance());
         mainNavigationViewPagerAdapter.addFragment(HistoryFragment.newInstance());
+        mainNavigationViewPagerAdapter.addFragment(FavoriteFragment.newInstance());
 
         navigationViewPager.setAdapter(mainNavigationViewPagerAdapter);
         navigationViewPager.addOnPageChangeListener(onPageChangeListener);
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         //Настраиваем иконки на табах
         navigationTabs.getTabAt(0).setIcon(NAVIGATION_ICONS[0]);
         navigationTabs.getTabAt(1).setIcon(NAVIGATION_ICONS[1]);
-//        navigationTabs.getTabAt(2).setIcon(NAVIGATION_ICONS[2]);
+        navigationTabs.getTabAt(2).setIcon(NAVIGATION_ICONS[2]);
 
         toolbarTitleTxt.setText(FRAGMENT_TITLES[0]);
     }

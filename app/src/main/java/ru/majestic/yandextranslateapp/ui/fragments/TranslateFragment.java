@@ -63,7 +63,7 @@ public class TranslateFragment extends Fragment {
     @BindView(R.id.txt_dictionary_transcription)
     TextView dictionaryTranscriptionTxt;
     @BindView(R.id.dictionary_entry_recycler_view)
-    RecyclerView dictionaryEntriesReciclerView;
+    RecyclerView dictionaryEntriesRecyclerView;
     @BindView(R.id.edt_text_input)
     EditText inputEdt;
     @BindView(R.id.clear_input)
@@ -193,8 +193,8 @@ public class TranslateFragment extends Fragment {
             }
         });
 
-        dictionaryEntriesReciclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        dictionaryEntriesReciclerView.setAdapter(dictionaryEntryRecyclerViewAdapter);
+        dictionaryEntriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        dictionaryEntriesRecyclerView.setAdapter(dictionaryEntryRecyclerViewAdapter);
 
         //Для быстроты отладки
         if (BuildConfig.DEBUG) {
@@ -331,7 +331,7 @@ public class TranslateFragment extends Fragment {
     private void clearTranslate() {
         translateResultTxt.setText("");
         dictionaryResultContainer.setVisibility(View.GONE);
-        dictionaryEntriesReciclerView.setVisibility(View.GONE);
+        dictionaryEntriesRecyclerView.setVisibility(View.GONE);
     }
 
     /**
@@ -356,6 +356,11 @@ public class TranslateFragment extends Fragment {
         }
     }
 
+    /**
+     * Начинает запрос в Яндекс.Словарь
+     *
+     * @param text
+     */
     private void requestDictionary(String text) {
         if (lookupCall != null && lookupCall.isExecuted()) {
             lookupCall.cancel();
@@ -395,7 +400,7 @@ public class TranslateFragment extends Fragment {
             }
 
             //Словарь
-            dictionaryEntriesReciclerView.setVisibility(View.VISIBLE);
+            dictionaryEntriesRecyclerView.setVisibility(View.VISIBLE);
 
             dictionaryEntryRecyclerViewAdapter.getDictionaryEntries().clear();
             for (DictionaryEntry dictionaryEntry : lookupResponse.getDictionaryEntries()) {
@@ -404,7 +409,7 @@ public class TranslateFragment extends Fragment {
             dictionaryEntryRecyclerViewAdapter.notifyDataSetChanged();
 
         } else {
-            dictionaryEntriesReciclerView.setVisibility(View.GONE);
+            dictionaryEntriesRecyclerView.setVisibility(View.GONE);
         }
     }
     //===== </PRIVATE_METHODS> =====

@@ -25,5 +25,12 @@ public interface ITranslateItemDAO {
      */
     List<TranslateItem> list();
 
+    /**
+     * Список избранных переводов.
+     *
+     * @return
+     */
+    List<TranslateItem> favorites();
+
 
 }

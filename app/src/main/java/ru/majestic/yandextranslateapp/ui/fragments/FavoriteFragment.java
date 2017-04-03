@@ -21,36 +21,36 @@ import ru.majestic.yandextranslateapp.ui.adapters.TranslatesRecyclerViewAdapter;
 import ru.majestic.yandextranslateapp.ui.utils.DimensionsConverter;
 import ru.majestic.yandextranslateapp.ui.utils.Updatable;
 
-public class HistoryFragment extends Fragment implements Updatable {
+public class FavoriteFragment extends Fragment implements Updatable {
 
-    private TranslatesRecyclerViewAdapter translateHistoryRecyclerViewAdapter = new TranslatesRecyclerViewAdapter();
+    private TranslatesRecyclerViewAdapter translateFavoriteRecyclerViewAdapter = new TranslatesRecyclerViewAdapter();
 
     private static final int TOOLBAR_MAX_ELEVATION = 4;
 
     private int recyclerViewScrolledY = 0;
 
-    @BindView(R.id.history_recycler_view)
-    RecyclerView historyRecyclerView;
+    @BindView(R.id.favorite_recycler_view)
+    RecyclerView favoriteRecyclerView;
 
     @BindView(R.id.search_shadow)
     View searchShadow;
 
-    public HistoryFragment() {
+    public FavoriteFragment() {
         // Required empty public constructor
     }
 
-    public static HistoryFragment newInstance() {
-        return new HistoryFragment();
+    public static FavoriteFragment newInstance() {
+        return new FavoriteFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_history, container, false);
+        return inflater.inflate(R.layout.fragment_favorite, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        translateHistoryRecyclerViewAdapter.setActionListener(new TranslatesRecyclerViewAdapter.ActionListener() {
+        translateFavoriteRecyclerViewAdapter.setActionListener(new TranslatesRecyclerViewAdapter.ActionListener() {
             @Override
             public void onTranslateItemSelected(TranslateItem translateItem) {
 
@@ -59,10 +59,10 @@ public class HistoryFragment extends Fragment implements Updatable {
 
         ButterKnife.bind(this, view);
 
-        historyRecyclerView.setAdapter(translateHistoryRecyclerViewAdapter);
-        historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        favoriteRecyclerView.setAdapter(translateFavoriteRecyclerViewAdapter);
+        favoriteRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        historyRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        favoriteRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -86,20 +86,20 @@ public class HistoryFragment extends Fragment implements Updatable {
 
             @Override
             protected List<TranslateItem> doInBackground(Void... params) {
-                return DAOsHandler.getInstance().getTranslateItemDAO().list();
+                return DAOsHandler.getInstance().getTranslateItemDAO().favorites();
             }
 
             @Override
             protected void onPostExecute(List<TranslateItem> translateItems) {
                 if(getActivity().isFinishing()) return;
 
-                translateHistoryRecyclerViewAdapter.getTranslateItems().clear();
+                translateFavoriteRecyclerViewAdapter.getTranslateItems().clear();
 
                 for (TranslateItem translateItem: translateItems) {
-                    translateHistoryRecyclerViewAdapter.getTranslateItems().add(translateItem);
+                    translateFavoriteRecyclerViewAdapter.getTranslateItems().add(translateItem);
                 }
 
-                translateHistoryRecyclerViewAdapter.notifyDataSetChanged();
+                translateFavoriteRecyclerViewAdapter.notifyDataSetChanged();
             }
         }.execute();
 

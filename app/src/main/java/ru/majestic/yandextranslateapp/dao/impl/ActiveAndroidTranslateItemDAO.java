@@ -25,4 +25,13 @@ public class ActiveAndroidTranslateItemDAO implements ITranslateItemDAO {
                 .orderBy("translateTime DESC")
                 .execute();
     }
+
+    @Override
+    public List<TranslateItem> favorites() {
+        return new Select()
+                .from(TranslateItem.class)
+                .where("favorite = 1")
+                .orderBy("translateTime DESC")
+                .execute();
+    }
 }
